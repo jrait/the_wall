@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+</head>
+<body class = 'bg-dark text-white'>
+    <div class = 'container p-4'>
+        <div class = 'row mb-5'>
+    <h1 class = 'col-7'>Coding Dojo Wall</h1>
+    <h3 class = 'col-4'>Welcome {{user.first_name}}</h3>
+    <a href = '/logout' class = 'h-50 btn btn-secondary'>Logout</a>
+</div>
+    <form action = '/post' method = 'post'>
+        {% csrf_token %}
+    <h2>Post a Message:</h2>
+    <textarea class = 'col-12' name = 'message'></textarea>
+    <input type = 'submit' class = 'btn btn-primary self-align-right' value = 'Post Message'>
+    </form>
+
+    {% for message in all_messages %}
+    <div class = 'bg-secondary m-4 p-2'>
+        <h4>{{message.user.first_name}} {{message.user.last_name}}</h4>
+        <h5>{{message.created_at}}</h5>
+        <p class = 'm-2 bg-primary col-11 p-3'> {{message.message}}</p>
+        {% if message.user.id == user.id %}
+            <a class = 'btn btn-danger'href = '/delete/{{message.id}}/{{message.user.id}}'>Delete Message</a>
+        {% endif %}
+        <div class = 'm-2 text-info'>
+            {% for comment in all_comments %}
+            {% if comment.message.id == message.id %}
+            <p class = 'm-2 bg-light col-9'>{{comment.user.first_name}} {{comment.user.last_name}}: {{comment.comment}}</p>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <form action = '/comment' method = 'POST'>
+            {% csrf_token %}
+            <h5>Post a comment:</h5>
+            <input type = 'hidden' name = 'message_id' value = '{{message.id}}'>
+            <textarea class = 'col-6' name = 'message'></textarea>
+            <input type = 'submit' class = 'btn btn-success self-align-right' value = 'Post Comment'>
+        </form>
+    </div>
+    {% endfor %}
+
+</div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.3/js/bootstrap.min.js"
+    integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s"
+    crossorigin="anonymous"></script>
+</body>
+</html>
